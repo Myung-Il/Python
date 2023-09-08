@@ -3,38 +3,35 @@ from sys import stdin
 
 
 def heapsort(iterable):
-    h = []
-    result = []
     
-    for v in iterable:
-        print(v)
-        heapq.heappush(h, -v)
-        
-    for _ in range(len(h)):
-        result.append(-heapq.heappop(h))
-    return result
+    h=[]
+    for i in iterable:
+        heapq.heappush(h,i)
+    for i in range(len(iterable)):
+        iterable[i]=heapq.heappop(h)
+    
+    return iterable
 
 
 input=stdin.readline
 
 for _ in range(int(input())):
-    q=[0]
+    q=[]
 
     for _ in range(int(input())):
         ty,imf=input().split()
 
         if ty=='I':
-            if q:
-                q.append(imf)
-                continue
-            q[0]=int(imf)
-
+            q.append(int(imf))
 
         elif ty=='D' and q:
             q=heapsort(q)
-            q[0 if imf=='1'else -1].pop()
+            q.pop(-1 if imf=='1'else 0)
 
-    print(q)
+    if q:
+        print(max(q),min(q))
+    else:
+        print('EMPTY')
 
 
 '''
@@ -47,4 +44,16 @@ D 1
 D 1
 I 123
 D -1
+
+1
+9
+I -45
+I 653
+D 1
+I -642
+I 45
+I 97
+D 1
+D -1
+I 333
 '''
