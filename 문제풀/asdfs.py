@@ -1,24 +1,10 @@
-nova,orgin=map(int,input().split())
+'''
+1 2  3  4
+2 4  6  8
+3 6  9 12
+4 8 12 16
 
-nova_u=list(map(int,input().split()))
-orgin_u=list(map(int,input().split()))
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+1 2 2 3 3 4 4 4 6 6  8  8  9 12 12 16
 
-n_cnt,o_cnt=0,0
-
-n=0
-s=0
-for i in nova_u:
-    if s>n:
-        n+=100
-        n_cnt+=1
-    s+=i
-
-o=0
-s=0
-for i in orgin_u:
-    if s>o:
-        o+=360
-        o_cnt+=1
-    s+=i
-
-print(n_cnt,o_cnt)
+'''

@@ -1,22 +1,22 @@
-import sys
-input = sys.stdin.readline
+n = int(input())
+k = int(input())
 
-n, m = map(int, input().split())
-a = sorted(map(int, input().split()))
-b = sorted(map(int, input().split()))
-cnt = 1
-j = a[0]
-for i in range(n):
-    if a[i] - j < 100: continue
-    cnt += 1
-    j = a[i]
-    
-print(cnt)
+start = 1
+end = k
+r = 0
+while start <= end :
+    m = (start + end) // 2
+    t = 0
 
-cnt = 1
-j = b[0]
-for i in range(m):
-    if b[i] - j < 360: continue
-    cnt += 1
-    j = b[i]
-print(cnt)
+    for i in range(1, n+1) :
+        t += min(m // i, n)
+
+    if t < k :
+        start = m + 1
+    elif t >= k :
+        r = m
+        end = m - 1
+
+    print(start,end,'===',m,t,r)
+
+print(r)
