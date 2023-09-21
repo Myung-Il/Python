@@ -1,34 +1,37 @@
-from sys import stdin
-input=lambda:stdin.readline().rstrip()
+import heapq as h,sys
+input=lambda:sys.stdin.readline().rstrip()
+inf=float('inf')
+
+def dik(start):
+    q = []
+    h.heappush(q,[0, start])
+    dis_l[start] = 0
+    while q:
+        dis,exp_node=h.heappop(q)
+        if dis_l[exp_node]<dis:
+            continue
+        for n_exp_node,n_dis in graph[exp_node]:
+            dis_plus=dis+n_dis
+            if dis_plus<dis_l[n_exp_node]:
+                dis_l[n_exp_node]=dis_plus
+                h.heappush(q,[dis_plus,n_exp_node])
 
 
-def find(u):
-    if u!=p[u]:
-        p[u]=find(p[u])
-    return p[u]
+n,m,g=map(int,input().split())
+graph = [[]for _ in range(n+1)]
+for _ in range(m):
+    a,b,w=map(int,input().split())
+    graph[a].append([b,w])
 
+dis_l = [inf]*(n+1)
+dik(g)
 
-if __name__=='__main__':
-    v,e=map(int,input().split())
-    l=sorted([list(map(int,input().split()))for _ in range(e)],key=lambda x:x[2])
-    p=[i for i in range(v+1)]
+ans=dis_l[:]
+dis_l = [inf]*(n+1)
+for node in range(1,n+1):
+    if node!=g:
+        dik(node)
+        ans[node]+=dis_l[g]
+        dis_l = [inf]*(n+1)
 
-    ct=0
-    for a,b,c in l:
-        rt1=find(a)
-        rt2=find(b)
-        if rt1!=rt2:
-            if rt1>rt2:
-                p[rt1]=rt2
-            else:
-                p[rt2]=rt1
-            ct+=c
-
-    print(ct)
-
-'''
-3 3
-1 2 1
-2 3 2
-1 3 3
-'''
+print(max(ans[1:]))
