@@ -1,41 +1,66 @@
+from collections import deque
 import sys
-input = lambda:sys.stdin.readline().rstrip()
+sys.setrecursionlimit(10**9)
+input = sys.stdin.readline
 
 
-def init(node, start, end):
-    middle = (start+end)//2
-    if start==end:
-        tree[node] = l[start]
-        return tree[node]
-    tree[node] = init(node*2, start, middle)+init(node*2+1, middle+1, end)
-    return tree[node]
+def Dfs(start, here, level, li):
+    global cy
+    if level <= 2:
+        for v in graph[here]:
+            if visited[v] == False:
+                visited[v] = True
+                Dfs(start, v, level+1, li+[v])
+                visited[v] = False
+    else:
+        for v in graph[here]:
+            if visited[v] == False:
+                visited[v] = True
+                Dfs(start, v, level+1, li+[v])
+                visited[v] = False
+            else:
+                if v == start:
+                    cy = True
+                    for l in li:
+                        cycle.add(l)
+                    return
 
-def update(node, start, end, idx, diff):
-    middle = (start+end)//2
-    if end<idx or idx<start:return
-    tree[node]+=diff
-    if start!=end:
-        update(node*2, start, middle, idx, diff)
-        update(node*2+1, middle+1, end, idx, diff)
 
-def rangeSum(node, start, end, left, right):
-    middle = (start+end)//2
-    if end<left or right<start:return 0
-    if left<=start and end<=right:return tree[node]
-    return rangeSum(node*2, start, middle, left, right)+rangeSum(node*2+1, middle+1, end, left, right)
+def Bfs():
+    answer = [int(1e9)] * (n + 1)
+    q = deque()
+    for c in cycle:
+        q.append((c, 0))
+        answer[c] = 0
+
+    while q:
+        node, level = q.popleft()
+
+        for v in graph[node]:
+            if answer[v] == int(1e9):
+                answer[v] = level+1
+                q.append((v, level+1))
+    return answer[1:]
 
 
 if __name__=='__main__':
-    n,m,k = map(int,input().split())
-    l = [0]+[int(input()) for _ in range(n)]
-    tree = [0]*3_000_000
+    n = int(input())
+    graph = [[] for _ in range(n+1)]
+    cycle = set()
 
-    init(1, 1, n)
-    for _ in range(m+k):
-        ty,a,b = map(int,input().split())
-        if ty==1:
-            diff = b-l[a]
-            l[a] = b
-            update(1, 1, n, a, diff)
-        elif ty==2:
-            print(rangeSum(1, 1, n, a, b))
+    for _ in range(n):
+        a, b = map(int, input().split())
+        graph[a].append(b)
+        graph[b].append(a)
+
+    visited = [False]*(n+1)
+    cy = False
+    for i in range(1, n+1):
+        if cy == True:
+            break
+        visited[i] = True
+        Dfs(i, i, 1, [i])
+        visited[i] = False
+    cycle = list(cycle)
+
+    print(*Bfs())
