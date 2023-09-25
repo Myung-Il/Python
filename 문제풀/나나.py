@@ -1,66 +1,49 @@
-from collections import deque
-import sys
-sys.setrecursionlimit(10**9)
-input = sys.stdin.readline
+import sys, heapq
+input = lambda:sys.stdin.readline().rstrip()
 
+n,m = map(int,input().split())
+jewelry = [list(map(int,input().split()))for _ in range(n)]
+bags = [int(input())for _ in range(m)]
 
-def Dfs(start, here, level, li):
-    global cy
-    if level <= 2:
-        for v in graph[here]:
-            if visited[v] == False:
-                visited[v] = True
-                Dfs(start, v, level+1, li+[v])
-                visited[v] = False
-    else:
-        for v in graph[here]:
-            if visited[v] == False:
-                visited[v] = True
-                Dfs(start, v, level+1, li+[v])
-                visited[v] = False
-            else:
-                if v == start:
-                    cy = True
-                    for l in li:
-                        cycle.add(l)
-                    return
+jewelry.sort(reverse=True)
+bags.sort()
 
-
-def Bfs():
-    answer = [int(1e9)] * (n + 1)
-    q = deque()
-    for c in cycle:
-        q.append((c, 0))
-        answer[c] = 0
-
-    while q:
-        node, level = q.popleft()
-
-        for v in graph[node]:
-            if answer[v] == int(1e9):
-                answer[v] = level+1
-                q.append((v, level+1))
-    return answer[1:]
-
-
-if __name__=='__main__':
-    n = int(input())
-    graph = [[] for _ in range(n+1)]
-    cycle = set()
-
-    for _ in range(n):
-        a, b = map(int, input().split())
-        graph[a].append(b)
-        graph[b].append(a)
-
-    visited = [False]*(n+1)
-    cy = False
-    for i in range(1, n+1):
-        if cy == True:
+hq,s = [],0
+for i in bags:
+    while jewelry:
+        w,v = jewelry.pop()
+        if w>i:
+            jewelry.append([w,v])
             break
-        visited[i] = True
-        Dfs(i, i, 1, [i])
-        visited[i] = False
-    cycle = list(cycle)
+        heapq.heappush(hq,[-v,w])
+    
+    if hq:
+        v,w = heapq.heappop(hq)
+        if w>i:
+            heapq.heappush(hq,[v,w])
+            continue
+        s-=v
+print(s)
 
-    print(*Bfs())
+
+
+'''
+3 2
+1 65
+5 23
+2 99
+10
+2
+= 164
+
+4 4
+2 1
+2 2
+2 3
+2 4
+1
+1
+2
+2
+= 7
+'''
