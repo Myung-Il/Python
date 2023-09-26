@@ -1,26 +1,41 @@
-import sys, heapq
-input = lambda:sys.stdin.readline().rstrip()
+import sys
+from collections import deque
+input = sys.stdin.readline
 
-n,m = map(int,input().split())
-jewelry = [list(map(int,input().split()))for _ in range(n)]
-bags = [int(input())for _ in range(m)]
 
-jewelry.sort(reverse=True)
-bags.sort()
+def solve(n, tree, order) :
+    visited = [False for _ in range(n+1)]
+    q = deque([1])
+    visited[1] = True
 
-hq,s = [],0
-for i in bags:
-    while jewelry:
-        w,v = jewelry.pop()
-        if w>i:
-            jewelry.append([w,v])
-            break
-        heapq.heappush(hq,[-v,w])
+    ans_list = []
+    rank = [-1 for _ in range(n+1)]
+    for i in range(1,n+1) :
+        rank[order[i-1]] = i 
     
-    if hq:
-        v,w = heapq.heappop(hq)
-        if w>i:
-            heapq.heappush(hq,[v,w])
-            continue
-        s-=v
-print(s)
+    for i in range(1,n+1) :
+        tree[i] = sorted(tree[i], key=lambda x : rank[x])
+
+    while q :
+        front = q.popleft()
+        ans_list.append(front)
+        for element in tree[front] :
+            if visited[element] == False :
+                visited[element] = True
+                q.append(element)
+
+    if ans_list == order :print(1)
+    else :print(0)
+
+
+if __name__ == "__main__" :
+    n = int(input())
+    tree = [[] for _ in range(n+1)]
+    
+    for _ in range(1,n) :
+        x,y = map(int,input().split())
+        tree[x].append(y)
+        tree[y].append(x)
+
+    order = list(map(int,input().split()))
+    solve(n,tree,order)    

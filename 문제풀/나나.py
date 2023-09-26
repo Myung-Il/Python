@@ -1,49 +1,41 @@
-import sys, heapq
-input = lambda:sys.stdin.readline().rstrip()
-
-n,m = map(int,input().split())
-jewelry = [list(map(int,input().split()))for _ in range(n)]
-bags = [int(input())for _ in range(m)]
-
-jewelry.sort(reverse=True)
-bags.sort()
-
-hq,s = [],0
-for i in bags:
-    while jewelry:
-        w,v = jewelry.pop()
-        if w>i:
-            jewelry.append([w,v])
-            break
-        heapq.heappush(hq,[-v,w])
-    
-    if hq:
-        v,w = heapq.heappop(hq)
-        if w>i:
-            heapq.heappush(hq,[v,w])
-            continue
-        s-=v
-print(s)
+from collections import deque
+from sys import stdin
+input = lambda:stdin.readline().rstrip()
 
 
+def Bfs():
+    v = {i:0 for i in rng}
+    q = deque([1])
+    v[1] = 1
 
-'''
-3 2
-1 65
-5 23
-2 99
-10
-2
-= 164
+    ans = []
+    rank = [-1 for _ in range(n+1)]
+    for i in rng:
+        rank[choi[i-1]] = i
 
-4 4
-2 1
-2 2
-2 3
-2 4
-1
-1
-2
-2
-= 7
-'''
+    for i in rng:
+        l[i] = sorted(l[i],key=lambda x:rank[x])
+
+    while q:
+        x = q.popleft()
+        ans.append(x)
+        for i in l[x]:
+            if not v[i]:
+                v[i] = 1
+                q.append(i)
+
+    return (1 if ans==choi else 0)
+
+
+if __name__=='__main__':
+    n = int(input())
+    rng = range(1,n+1)
+    l = {i:[]for i in rng}
+
+    for _ in range(n-1):
+        a,b = map(int,input().split())
+        l[a].append(b)
+        l[b].append(a)
+
+    choi = list(map(int,input().split()))
+    print(Bfs())
