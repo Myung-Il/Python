@@ -1,41 +1,37 @@
-import sys
-from collections import deque
-input = sys.stdin.readline
+from sys import stdin,setrecursionlimit
+setrecursionlimit(10**9)
+input = lambda:stdin.readline().rstrip()
 
 
-def solve(n, tree, order) :
-    visited = [False for _ in range(n+1)]
-    q = deque([1])
-    visited[1] = True
-
-    ans_list = []
-    rank = [-1 for _ in range(n+1)]
-    for i in range(1,n+1) :
-        rank[order[i-1]] = i 
-    
-    for i in range(1,n+1) :
-        tree[i] = sorted(tree[i], key=lambda x : rank[x])
-
-    while q :
-        front = q.popleft()
-        ans_list.append(front)
-        for element in tree[front] :
-            if visited[element] == False :
-                visited[element] = True
-                q.append(element)
-
-    if ans_list == order :print(1)
-    else :print(0)
+def Dfs(x):
+    for i in l[x]:
+        if not v[i]:
+            ans.append(i)
+            v[i] = 1
+            Dfs(i)
 
 
-if __name__ == "__main__" :
+if __name__=='__main__':
     n = int(input())
-    tree = [[] for _ in range(n+1)]
-    
-    for _ in range(1,n) :
-        x,y = map(int,input().split())
-        tree[x].append(y)
-        tree[y].append(x)
+    rng = range(1,n+1)
+    l = {i:[]for i in rng}
 
-    order = list(map(int,input().split()))
-    solve(n,tree,order)    
+    for _ in range(n-1):
+        a,b = map(int,input().split())
+        l[a].append(b)
+        l[b].append(a)
+
+    choi = list(map(int,input().split()))
+    v = {i:0 for i in rng}
+    v[1] = 1
+
+    ans = [1]
+    rank = [-1 for _ in range(n+1)]
+    for i in rng:
+        rank[choi[i-1]] = i
+
+    for i in rng:
+        l[i] = sorted(l[i],key=lambda x:rank[x])
+
+    Dfs(1)
+    print(1 if ans==choi else 0)
