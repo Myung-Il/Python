@@ -1,41 +1,38 @@
 from collections import deque
-from sys import stdin
+from sys import stdin,setrecursionlimit
+setrecursionlimit(10**9)
 input = lambda:stdin.readline().rstrip()
 
 
 def Bfs():
-    v = {i:0 for i in rng}
-    q = deque([1])
-    v[1] = 1
-
-    ans = []
-    rank = [-1 for _ in range(n+1)]
-    for i in rng:
-        rank[choi[i-1]] = i
-
-    for i in rng:
-        l[i] = sorted(l[i],key=lambda x:rank[x])
+    q = deque([[n,0]])
+    v = [-1]*100_001
 
     while q:
-        x = q.popleft()
-        ans.append(x)
-        for i in l[x]:
-            if not v[i]:
-                v[i] = 1
-                q.append(i)
+        x,cnt = q.popleft()
+        if x == k:
+            break
+        
+        if -1<x-1<100_001 and v[x-1]==-1:
+            v[x-1] = x
+            q.append([x-1,cnt+1])
+        if -1<x+1<100_001 and v[x+1]==-1:
+            v[x+1] = x
+            q.append([x+1,cnt+1])
+        if -1<x*2<100_001 and v[x*2]==-1:
+            v[x*2] = x
+            q.append([x*2,cnt+1])
 
-    return (1 if ans==choi else 0)
+    idx,l = k,[k]
+    for _ in range(cnt):
+        idx = v[idx]
+        l.append(idx)
+    l.reverse()
+    return cnt,l
 
 
 if __name__=='__main__':
-    n = int(input())
-    rng = range(1,n+1)
-    l = {i:[]for i in rng}
-
-    for _ in range(n-1):
-        a,b = map(int,input().split())
-        l[a].append(b)
-        l[b].append(a)
-
-    choi = list(map(int,input().split()))
-    print(Bfs())
+    n,k = map(int,input().split())
+    time,r00t = Bfs()
+    print(time)
+    print(*r00t)
