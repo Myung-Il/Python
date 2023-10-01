@@ -1,32 +1,34 @@
-from collections import deque
-from sys import stdin,setrecursionlimit
-setrecursionlimit(10**9)
-input = lambda:stdin.readline().rstrip()
+import heapq,sys
+sys.setrecursionlimit(10**9)
+input = lambda:sys.stdin.readline().rstrip()
 
 
+xn = [ 0, 0, 1,-1]
+yn = [ 1,-1, 0, 0]
 def Bfs():
-    q = deque([[n,0]])
-    v = [-1]*100_001
+    hq = [[0,0,0]]
+    v = [[float('inf')]*row for _ in range(col)]
 
-    while q:
-        x,cnt = q.popleft()
-        if x == k:
-            break
+    while hq:
+        x,y,bk = heapq.heappop(hq)
+        if x==row-1 and y==col-1:
+            return bk
         
-        if -1<x*2<100_001 and v[x*2]==-1:
-            v[x*2] = x
-            q.append([x*2,cnt])
-        if -1<x-1<100_001 and v[x-1]==-1:
-            v[x-1] = x
-            q.append([x-1,cnt+1])
-        if -1<x+1<100_001 and v[x+1]==-1:
-            v[x+1] = x
-            q.append([x+1,cnt+1])
-
-    return cnt
+        for i in range(4):
+            xi = x + xn[i]
+            yi = y + yn[i]
+            if 0<=xi<row and 0<=yi<col:
+                if l[yi][xi]==1:
+                    if v[yi][xi] > bk+1:
+                        v[yi][xi] = bk+1
+                        heapq.heappush(hq,[xi,yi,bk+1])
+                elif v[yi][xi] > bk:
+                    v[yi][xi] = bk
+                    heapq.heappush(hq,[xi,yi,bk])
 
 
 if __name__=='__main__':
-    n,k = map(int,input().split())
-    time = Bfs()
-    print(time)
+    row,col = map(int,input().split())
+    l = [list(map(int,list(input())))for _ in range(col)]
+
+    print(Bfs())
