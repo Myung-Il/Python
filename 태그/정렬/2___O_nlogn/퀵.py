@@ -1,25 +1,21 @@
-l=[3,9,12,1,5,8,7,6]
+l=[4,6,9,12,2,8,11,7,1,3,10,5]
 
-def qwe(l):
-    n=l[-1]
+def q(l,left,right):
+    x = l[(left+right)//2]
+
+    le = left
+    ri = right
+    while le<=ri:
+        while l[le]<x: le += 1
+        while l[ri]>x: ri -= 1
+
+        if le<=ri:
+            l[le],l[ri] = l[ri],l[le]
+            le += 1
+            ri -= 1
+    print(l,f'--- 정렬 구간 : {l[left:right+1]}')
     
-    print('-=-=-=-',l)
+    if left<ri: q(l,left,ri)
+    if le<right:q(l,le,right)
 
-    sl=list()
-    ll=list()
-    for i in l:
-        if i==n:
-            l=sl+[n]+ll
-        elif i < n:
-            sl.append(i)
-        else:ll.append(i)
-
-
-    sl = qwe(l[:l.index(n)])
-    ll = qwe(l[l.index(n)+1:])
-
-
-    print(sl,ll,'=====',l)
-
-
-print(qwe(l))
+q(l,0,len(l)-1)
