@@ -4,33 +4,34 @@ def qwe(l):
     n=len(l)
     if n <= 1:
         return
-    mid=n//2
-    lt = l[:mid]
-    rt = l[mid:]
+    middle=n//2
+    left = l[:middle]
+    right = l[middle:]
 
-    qwe(lt)
-    qwe(rt)
+    qwe(left)
+    qwe(right)
 
     i,j,p=0,0,0
     
-    print('=======',lt,rt)
-    while i<len(lt) and j<len(rt):
-        if lt[i] < rt[j]:
-            l[p]=lt[i]
+    while i<len(left) and j<len(right):
+        if left[i] < right[j]:
+            l[p]=left[i]
             i+=1
             p+=1
         else:
-            l[p]=rt[j]
+            l[p]=right[j]
             j+=1
             p+=1
-    while i<len(lt):
-        l[p]=lt[i]
+
+    while i<len(left):
+        l[p]=left[i]
         i+=1
         p+=1
-    while i<len(rt):
-        l[p]=rt[j]
+        
+    while j<len(right):
+        l[p]=right[j]
         j+=1
         p+=1
+    print(l,f'--- 정렬 부분 left : {left} /// right : {right}')
 
 qwe(l)
-print(l)
