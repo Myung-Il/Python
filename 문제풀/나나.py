@@ -1,49 +1,28 @@
-from collections import deque
-import sys
-input = lambda:sys.stdin.readline().rstrip()
+a = [4,2,5,1,3]
+
+n=len(a)
+
+for i in range(1,n):
+    key=a[i]
+    pl=0
+    pr=i-1
 
 
-xn = [1, 0,-1, 0]
-yn = [0, 1, 0,-1]
-def f(c):
-    if c=='L':return(dir-1)%4
-    else:return(dir+1)%4
+    while True:
+        pc=(pl+pr)//2
+        if a[pc]==key:
+            break
+        elif a[pc]>key:
+            pl=pc+1
+        else:
+            pr=pc-1
+        if pl>pr:
+            break
 
+    pd = pc+1 if pl<=pr else pr+1 # 삽입해야 할 위치의 인덱스
 
-if __name__=='__main__':
-    n = int(input())
-    bored = [[0]*n for _ in range(n)]
-    for _ in range(int(input())):
-        y,x = map(int,input().split())
-        bored[y-1][x-1] = 4
-    bored[0][0] = 1
+    for j in range(i, pd, -1):
+        a[j]=a[j-1]
 
-    d = dict()
-    for _ in range(int(input())):
-        s,c = input().split()
-        d[int(s)] = c
-
-    q = deque([[0,0]])
-    x,y = 0,0
-    cnt,dir = 0,0
-    while 1:
-        cnt+=1
-        x+=xn[dir];y+=yn[dir]
-        if 0>x or x>=n or 0>y or y>=n:break
-        
-        if bored[y][x]==4:
-            bored[y][x] = 1
-            q.append([x,y])
-            if cnt in d:
-                dir = f(d[cnt])
-
-        elif bored[y][x]==0:
-            bored[y][x] = 1
-            q.append([x,y])
-            a,b = q.popleft()
-            bored[b][a] = 0
-            if cnt in d:
-                dir = f(d[cnt])
-        
-        else:break
-    print(cnt)
+    a[pd]=key
+    print(a)
