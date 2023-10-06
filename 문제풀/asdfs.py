@@ -1,28 +1,36 @@
 import sys
-input = sys.stdin.readline
 
-n = int(input())
-graph = [[1,1],[1,0]]
+sys.setrecursionlimit(10 ** 8)
+input = lambda: sys.stdin.readline().rstrip()
 
-# x*x
-def calcEven(a,b):
-    tempGraph = [[0,0],[0,0]]
-    for i in range(2):
-        for j in range(2):
-            for k in range(2):
-                tempGraph[i][j] += a[i][k] * b[k][j]
-            tempGraph[i][j] %= 1000000007
-    return tempGraph
+s = input()
+L = len(s)
 
-def divcon(graph, n):
-    if n == 1:
-        return graph
-    else:
-        x = divcon(graph, n // 2)
-        if n % 2 == 0:
-            return calcEven(x,x)
+
+dp = [2500 for _ in range(L)]+[0]
+is_p = [[0 for j in range(L)] for i in range(L)]
+
+
+for i in range(L):  # 길이 1 짜리 팰린드롬
+    is_p[i][i] = 1
+
+for i in range(1, L):  # 길이 2 짜리 팰린드롬 (AA, DD 같은 놈들)
+    if s[i - 1] == s[i]:
+        is_p[i - 1][i] = 1
+
+for l in range(3, L + 1):  # 길이 3 ~ L 짜리 팰린드롬
+    for start in range(L - l + 1):
+        end = start + l - 1
+        if s[start] == s[end] and is_p[start + 1][end - 1]:
+            # 처음과 끝이 같고, 그 사이가 팰린드롬이면
+            is_p[start][end] = 1  # start~end 도 팰린드롬
+
+
+for end in range(L):
+    for start in range(end + 1):
+        if is_p[start][end]:
+            dp[end] = min(dp[end], dp[start - 1] + 1)
         else:
-            return calcEven(calcEven(x,x), graph)
+            dp[end] = min(dp[end], dp[end - 1] + 1)
 
-answer = divcon(graph, n)
-print(answer[0][1] % 1000000007)
+print(dp[L - 1])

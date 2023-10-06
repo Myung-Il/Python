@@ -1,22 +1,25 @@
-def po(l1,l2):
-    ls = [[0,0],[0,0]]
-    for i in range(2):
-        for j in range(2):
-            for h in range(2):
-                ls[i][j] += l1[i][h]*l2[h][j]
-            ls[i][j] %= 1_000_000_007
-    return ls
-
-def dac(li,u):
-    if u==1:return li
+import sys
+from collections import deque
+input = sys.stdin.readline
+ 
+N = int(input())
+buttons = deque()
+ 
+for _ in range(N):
+    info = list(input().split())
+    if buttons and info[0] == "3":
+        buttons.pop()
     else:
-        x = dac(li,u//2)
-        if u%2==0:return po(x,x)
-        else:return po(po(x,x),li)
-
-
-if __name__=='__main__':
-    n = int(input())
-    l = [[1,1],[1,0]]
-    ans = dac(l,n)[0][1]
-    print(ans%1_000_000_007)
+        buttons.append(info)
+ 
+words = deque()
+for button in buttons:
+    if button[0] == "1":
+        words.append(button[1])
+    elif button[0] == "2":
+        words.appendleft(button[1])
+ 
+result = 0
+if words:
+    result = "".join(words)
+print(result)
