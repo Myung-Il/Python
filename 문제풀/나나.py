@@ -1,25 +1,22 @@
-import sys
-from collections import deque
-input = sys.stdin.readline
- 
-N = int(input())
-buttons = deque()
- 
-for _ in range(N):
-    info = list(input().split())
-    if buttons and info[0] == "3":
-        buttons.pop()
-    else:
-        buttons.append(info)
- 
-words = deque()
-for button in buttons:
-    if button[0] == "1":
-        words.append(button[1])
-    elif button[0] == "2":
-        words.appendleft(button[1])
- 
-result = 0
-if words:
-    result = "".join(words)
-print(result)
+from sys import stdin
+import heapq as hq
+input = lambda:stdin.readline().rstrip()
+
+
+left_middle = []
+right = []
+for _ in range(int(input())):
+    n = int(input())
+
+    if len(left_middle)==len(right):
+        hq.heappush(left_middle,-n)
+    else:hq.heappush(right,n)
+
+    if right and right[0]<-left_middle[0]:
+        r_ = hq.heappop(right)
+        l_m = hq.heappop(left_middle)
+        
+        hq.heappush(left_middle,-r_)
+        hq.heappush(right,-l_m)
+    
+    print(-left_middle[0])
