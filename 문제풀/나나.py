@@ -2,21 +2,17 @@ from sys import stdin
 import heapq as hq
 input = lambda:stdin.readline().rstrip()
 
+n = int(input())
 
-left_middle = []
-right = []
-for _ in range(int(input())):
-    n = int(input())
+l = [list(map(int,input().split()))for _ in range(n)]
+l.sort()
 
-    if len(left_middle)==len(right):
-        hq.heappush(left_middle,-n)
-    else:hq.heappush(right,n)
+g = []
+hq.heappush(g, l[0][1])
+for i in range(1,n):
+    if l[i][0]<g[0]:hq.heappush(g,l[i][1])
+    else:
+        hq.heappop(g)
+        hq.heappush(g,l[i][1])
 
-    if right and right[0]<-left_middle[0]:
-        r_ = hq.heappop(right)
-        l_m = hq.heappop(left_middle)
-        
-        hq.heappush(left_middle,-r_)
-        hq.heappush(right,-l_m)
-    
-    print(-left_middle[0])
+print(len(g))
