@@ -1,13 +1,25 @@
-import heapq as hq
-from sys import stdin
-input = lambda:stdin.readline().rstrip()
+import heapq
+import sys
 
-n = int(input())
-l = [list(map(int,input().split()))for _ in range(n)]
+read = sys.stdin.readline
 
-l.sort()
-q = []
-for d,w in l:
-    hq.heappush(q,w)
-    if d<len(q):hq.heappop(q)
-print(sum(q))
+n = int(read().strip("\n"))
+
+lectures = []
+
+for _ in range(n):
+    p, d = map(int, read().strip("\n").split())
+    lectures.append([p, d])
+
+lectures.sort(key = lambda x: x[1])
+
+queue = []
+
+for pay, day in lectures:
+    heapq.heappush(queue, pay)
+
+    if day < len(queue):
+        heapq.heappop(queue)
+
+    print(queue)
+print(sum(queue))
