@@ -1,26 +1,33 @@
-import heapq
-n, m = map(int, input().split())
+from collections import deque
 
-indegree = [0]*(n+1)
-graph = [[] for _ in range(n+1)]
-heap = []
-result = []
-for _ in range(m):
-  prev, post = map(int, input().split())
-  graph[prev].append(post)
-  indegree[post] += 1
+# 위상정렬
+def topology():
+    q = deque([])
+    r = []
+    for i in range(n): # 루트 탐색
+        if v[i+1]==0:q.append(i+1)
 
-for i in range(1,n+1):
-  if indegree[i]==0:
-    heapq.heappush(heap, i)
+    while q:
+        x = q.popleft() # 루프 출력
+        r.append(x)     # 결과에 추가
 
-while heap:
-  value = heapq.heappop(heap)
-  result.append(value)
-  for i in graph[value]:
-    indegree[i] -= 1
-    if indegree[i]==0:
-      heapq.heappush(heap, i)
+        for i in g[x]:  # 자식 탐색
+            v[i]-=1     # 자식이 아직 봐야할 우선순위가 남아 있다면 넘어감
+            if v[i]==0:q.append(i) # 없다면 탐색 범위에 추가
+    
+    return r
 
-for i in result:
-  print(i, end=" ")
+# 메인
+if __name__=='__main__':
+    n,m = 6,7
+    # [[5,6], [5,2], [2,1], [6,1], [2,4], [1,3], [4,3]]
+    g = { 1: [ 3   ],
+          2: [ 1,4 ],
+          3: [     ],
+          4: [ 3   ],
+          5: [ 6,2 ],
+          6: [ 1   ]
+        }
+    v = [0, 2, 1, 2, 1, 0, 1]
+
+    print(topology())
