@@ -1,34 +1,69 @@
-import heapq as hq
-from sys import stdin
-input = lambda:stdin.readline().rstrip()
+from collections import deque
+import sys
+import heapq
+
+INF = 1e9
 
 
 def dijkstra():
-    d = {node:[] for node in g}
-    d[1].append(0)
     q = []
-    hq.heappush(q,[0,1])
+    heapq.heappush(q, (0, s))
+    distance[s] = 0  # 출발지
 
+    while q:  # 큐가 비어있지 않다면
+        dist, now = heapq.heappop(q)
+        # 현재 노드가 이미 처리된 적이 있는 노드라면 무시
+        if distance[now] < dist:
+            continue
+        # 현재 노드와 연결된 다른 인접한 노드들을 확인하면서 거리 업데이트
+        for i in graph[now]:
+            cost = dist + graph[now][i]
+            if cost < distance[i]:  # 해당 지점을 거치는 것이 거리가 짧은 경우
+                distance[i] = cost
+                heapq.heappush(q, (cost, i))
+
+
+def bfs():
+    q = deque()
+    q.append(d)
     while q:
-        spc,node = hq.heappop(q)
-        for i in g[node]:
-            cost = spc+i[1]
-            if len(d[i[0]])<k:
-                hq.heappush(d[i[0]], -cost)
-                hq.heappush(q, (cost, i[0]))
-            elif cost < -d[i[0]][0]:
-                hq.heappop(d[i[0]])
-                hq.heappush(d[i[0]], -cost)
-                hq.heappush(q, (cost, i[0]))
-    return d
+        v = q.popleft()
+        if v == s:  # 시작점 도달
+            continue  # break하면 다른 최단 경로를 확인할 수 없다.
+        for pre_v, pre_c in r_graph[v]:
+            if distance[pre_v] + graph[pre_v][v] == distance[v]:
+                if (pre_v, v) not in remove_List:
+                    remove_List.append((pre_v, v))
+                    q.append(pre_v)
 
 
-if __name__=="__main__":
-    n,m,k = map(int,input().split())
-    g = {i+1:[]for i in range(n)}
+while True:
+    n, m = map(int, sys.stdin.readline().split())
+    if n == 0 and m == 0:break
+    s, d = map(int, sys.stdin.readline().split())  # 출발지, 도착지
+    graph = [dict() for _ in range(n)]
+    r_graph = [[] for _ in range(n)]
     for _ in range(m):
-        a,b,c = map(int,input().split())
-        g[a].append([b,c])
-    
-    for i in dijkstra().values():
-        print(-(i[0]if len(i)==k else 1))
+        u, v, p = map(int, sys.stdin.readline().split())  # 도로 정보 입력
+        graph[u][v] = p
+        r_graph[v].append((u, p))  # 경로를 추적하기 위해서 역순 저장
+
+    # 다익스트라 알고리즘을 사용하여 최단 거리 찾기
+    distance = [INF] * n
+    dijkstra()
+
+    # BFS를 사용하여 최단 경로 추적
+    remove_List = list()
+    bfs()
+
+    # 최단 경로 제거
+    for u, v in remove_List:
+        del graph[u][v]
+
+    # 다익스트라 알고리즘을 사용하여 최종 최단 경로 찾기
+    distance = [INF] * n
+    dijkstra()
+    if distance[d] == INF:  # 거의 최단 경로가 없는 경우
+        print(-1)
+    else:
+        print(distance[d])
