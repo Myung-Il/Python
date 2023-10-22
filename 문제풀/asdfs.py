@@ -1,38 +1,37 @@
-from collections import deque
 from sys import stdin
 input = lambda:stdin.readline().rstrip()
 
 
+def init(node,start,end):
+    global mx
+
+    middle = (start+end)//2
+    if start==end:
+        tree[node] = (l[start][0],l[start][1])
+        mx = max(mx,l[start][0]*l[start][1])
+        return tree[node]
+    else:
+        left_x,left_y = init(node*2,start,middle)
+        right_x,right_y = init(node*2+1,middle+1,end)
+
+        if left_y==0:tree[node] = (right_x,right_y)
+        elif right_y==0:tree[node] = (left_x,left_y)
+        else:tree[node] = (left_x+right_x,max(left_y,right_y))
+
+        mx = max(mx,tree[node][0]*tree[node][1])
+        return tree[node]
+
+
+
 if __name__=='__main__':
-    n,k = map(int,input().split())
-    l = list(map(int,input().split()))
-    
-    l.sort()
-    q = deque()
-    r,right = float('inf'),1
-    for left in range(k):
-        if q and q[0]<=left:q.popleft()
+    n = int(input())
+    l = [None]+[(1,int(input()))for _ in range(n)]
+    tree = [0]*4*n
 
-        while right<left+n-k:
-            while q and l[right]-l[right-1]<=l[q[-1]]-l[q[-1]-1]:q.pop()
-            q.append(right)
-            right+=1
-        
-        mn = l[q[0]]-l[q[0]-1]
-        mx = l[right-1]-l[left]
-        r = min(r,mn+mx)
-    print(r)
+    mx = 0
+    init(1,1,n)
 
-'''
-5 2
--3 -2 3 8 6
-= 7
-
-6 2
--5 8 10 1 13 -1
-= 13
-
-5 2
-0 2 3 9999 10000
-= 4
-'''
+    print()
+    for i in range(1,4*n):
+        print(i,tree[i])
+    print('====',mx)

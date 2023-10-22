@@ -1,38 +1,23 @@
-import heapq
 from sys import stdin
-input=stdin.readline
+input = lambda:stdin.readline().rstrip()
 
-def dijkstra(graph, start):
-    st_dis={node:float('inf')for node in graph}
-    st_dis[start]=0
-    qu=[]
-    heapq.heappush(qu,[st_dis[start],start])
-
-    while qu:
-        dis,exp_node=heapq.heappop(qu)
-
-        if st_dis[exp_node]<dis:
-            continue
-
-        for new_exp_node, new_dis in graph[exp_node].items():
-            sum_dis=new_dis+dis
-            if sum_dis<st_dis[new_exp_node]:
-                st_dis[new_exp_node]=sum_dis
-                heapq.heappush(qu,[sum_dis,new_exp_node])
-    return st_dis
+n = int(input())
+r = 0
+l,s = [int(input())for _ in range(n)],[]
 
 
+for i in range(n):
+    while s and l[s[-1]]>l[i]:
+        h,w = l[s[-1]],i
+        s.pop()
+        if s:w = i-s[-1]-1
+        r = max(r,h*w)
+    s.append(i)
 
-n,line=map(int,input().split())
-start=int(input())
-rt={i:{} for i in range(1,n+1)}
+while s:
+    h,w = l[s[-1]],n
+    s.pop()
+    if s:w = n-s[-1]-1
+    r = max(r,h*w)
 
-for _ in range(line):
-    go,arrival,cost=map(int,input().split())
-    if arrival in rt[go]:
-        rt[go][arrival]=min(rt[go][arrival],cost)
-    else:
-        rt[go][arrival]=cost
-
-for v in dijkstra(rt,start).values():
-    print(v if v!=float('inf')else 'INF')
+print(r)
