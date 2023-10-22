@@ -7,7 +7,7 @@ l,s = [int(input())for _ in range(n)],[]
 
 
 for i in range(n):
-    while s and l[s[-1]]>l[i]:
+    while s and l[s[-1]]>=l[i]:
         h,w = l[s[-1]],i
         s.pop()
         if s:w = i-s[-1]-1
