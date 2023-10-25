@@ -1,44 +1,46 @@
-from sys import stdin
-input = lambda:stdin.readline().rstrip()
+import sys
+input=sys.stdin.readline
 
-class SegmentTree:
-    def __init__(self, arr, N):
-        self.arr = arr
-        self.tree = [0]*N*4
+def init_min(start,end,index):
+    if start==end:
+        tree_min[index]=arr[start]
+    else:
+        mid=(start+end)//2
+        tree_min[index]=min(init_min(start,mid,index*2),init_min(mid+1,end,index*2+1))
+    return tree_min[index]
 
-    def query(self, node, start, end, rank):
-        if start == end:
-            return start
+def init_max(start,end,index):
+    if start==end:
+        tree_max[index]=arr[start]
+    else:
+        mid=(start+end)//2
+        tree_max[index]=max(init_max(start,mid,index*2),init_max(mid+1,end,index*2+1))
+    return tree_max[index]
+    
+def find_min(start,end,index,left,right):
+    if start>right or end<left:
+        return sys.maxsize
+    if start>=left and end<=right:
+        return tree_min[index]
+    mid=(start+end)//2
+    return min(find_min(start,mid,index*2,left,right),find_min(mid+1,end,index*2+1,left,right))
 
-        mid = (start + end) // 2
-        left = self.tree[node * 2]
-        if left >= rank:
-            return self.query(node * 2, start, mid, rank)
-        return self.query(node * 2 + 1, mid + 1, end, rank - left)
+def find_max(start,end,index,left,right):
+    if left>end or right<start:
+        return -1
+    if left<=start and end<=right:
+        return tree_max[index]
+    mid=(start+end)//2
+    return max(find_max(start,mid,index*2,left,right), find_max(mid+1,end,index*2+1,left,right))
 
-    def update(self, node, start, end, idx, diff):
-        if end < idx or idx < start:
-            pass
-        elif start == end:
-            self.tree[node] += diff
-        else:
-            mid = (start + end) // 2
-            temp1 = self.update(node * 2, start, mid, idx, diff)
-            temp2 = self.update(node * 2 + 1, mid + 1, end, idx, diff)
-            self.tree[node] = temp1 + temp2
-        return self.tree[node]
+N,M=map(int,input().split())
+arr=[int(input()) for _ in range(N)]
+tree_min=[0]*(N*4)
+tree_max=[0]*(N*4)
 
+init_min(0,N-1,1)
+init_max(0,N-1,1)
 
-T = int(input())
-
-N = 1_000_000 + 1
-tree = SegmentTree([0] * N, N)
-answer = []
-for _ in range(T):
-    q, *n = map(int, input().split())
-    if q == 1:
-        out = tree.query(1, 1, N, n[0])
-        print(out)
-        tree.update(1, 1, N, out, -1)
-    if q == 2:
-        tree.update(1, 1, N, n[0], n[1])
+for _ in range(M):
+    a,b=map(int,input().split())
+    print(find_min(0,N-1,1,a-1,b-1), find_max(0,N-1,1,a-1,b-1))

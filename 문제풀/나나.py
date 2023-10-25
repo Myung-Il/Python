@@ -1,32 +1,44 @@
-from sys import stdin
+from sys import stdin,maxsize
 input = lambda:stdin.readline().rstrip()
 
 
-def output(node,start,end,rank):
+def initMN(node,start,end):
     middle = (start+end)//2
-    if start==end:return start
-    if tree[node*2]>=rank:return output(node*2,start,middle,rank)
-    return output(node*2+1,middle+1,end,rank-tree[node*2])
+    if start==end:treeMN[node] = l[start]
+    else:treeMN[node] = min(initMN(node*2,start,middle),initMN(node*2+1,middle+1,end))
+    return treeMN[node]
+def rangeMN(node,start,end,left,right):
+    middle = (start+end)//2
+    if left>end or start>right:return maxsize
+    if left<=start and end<=start:return treeMN[node]
+    return min(rangeMN(node*2,start,middle,left,right),rangeMN(node*2+1,middle+1,end,left,right))
 
-def update(node,start,end,idx,dif):
-    middle = (start+end)//2
-    if end<idx or idx<start:return
-    tree[node]+=dif
-    if start!=end:
-        update(node*2, start, middle, idx, dif)
-        update(node*2+1, middle+1, end, idx, dif)
-            
 
 if __name__=='__main__':
-    n = int(input())
-    c = 1_000_001
-    tree = [0]*c*4
-    
-    for _ in range(n):
-        t,*i = map(int,input().split())
+    n,k = map(int,input().split())
+    l = [0]+[int(input())for _ in range(n)]
+    treeMX = [0]*n*4
+    treeMN = [0]*n*4
 
-        if t==1:
-            elm = output(1,1,c,i[0])
-            print(elm)
-            update(1,1,c,elm,-1)
-        if t==2:update(1,1,c,i[0],i[1])
+    initMN(1,1,n)
+    for i in range(k):
+        a,b = map(int,input().split())
+        print(rangeMN(1,1,n,a,b))
+
+'''
+10 4
+75
+30
+100
+38
+50
+51
+52
+20
+81
+5
+1 10
+3 5
+6 9
+8 10
+'''
