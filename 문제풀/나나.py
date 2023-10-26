@@ -2,42 +2,35 @@ from sys import stdin
 input = lambda:stdin.readline().rstrip()
 
 
-def initMN(node,start,end):
+def init(node,start,end):
     middle = (start+end)//2
-    if start==end:treeMN[node] = l[start]
-    else:treeMN[node] = min(initMN(node*2,start,middle),initMN(node*2+1,middle+1,end))
-    return treeMN[node]
-def rangeMN(node,start,end,left,right):
+    if start==end:tree[node] = l[start]
+    else:tree[node] = init(node*2,start,middle)*init(node*2+1,middle+1,end)%1_000_000_007
+    return tree[node]
+
+def update(node,start,end,idx,dif):
     middle = (start+end)//2
-    if left>end or start>right:return float('inf')
-    if left<=start and end<=start:return treeMN[node]
-    return min(rangeMN(node*2,start,middle,left,right),rangeMN(node*2+1,middle+1,end,left,right))
+    if end<idx or idx<start:return 1
+    if start==end:tree[node] = dif
+    else:
+        update(node*2,start,middle,idx,dif)
+        update(node*2+1,middle+1,end,idx,dif)
+        tree[node] = tree[node*2]*tree[node*2+1]%1_000_000_007
+
+def rangeMtp(node,start,end,left,right):
+    middle = (start+end)//2
+    if left>end or start>right:return 1
+    if left<=start and end<=right:return tree[node]
+    return rangeMtp(node*2,start,middle,left,right)*rangeMtp(node*2+1,middle+1,end,left,right)%1_000_000_007
 
 
 if __name__=='__main__':
-    n,k = map(int,input().split())
+    n,m,k = map(int,input().split())
     l = [0]+[int(input())for _ in range(n)]
-    treeMN = [0]*n*4
+    tree = [0]*n*4
 
-    initMN(1,1,n)
-    for i in range(k):
-        a,b = map(int,input().split())
-        print(rangeMN(1,1,n,a,b))
-
-'''
-10 4
-75
-30
-100
-38
-50
-51
-52
-20
-81
-5
-1 10
-3 5
-6 9
-8 10
-'''
+    init(1,1,n)
+    for _ in range(m+k):
+        ty,*i = map(int,input().split())
+        if ty==1:update(1,1,n,i[0],i[1])
+        if ty==2:print(rangeMtp(1,1,n,i[0],i[1]))
