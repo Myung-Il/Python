@@ -16,3 +16,4 @@ def fail(s):
 fail('abcababc')
 fail('ababab')
 fail('aaaa')
+fail('abcbbacabcb')
