@@ -1,1 +1,1 @@
-print([0]+list(map(int,input().split())))
+print(max([0,10],[5,0],[float('inf')]))
