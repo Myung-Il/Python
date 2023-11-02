@@ -22,11 +22,11 @@ def update(node, start, end, left, right, diff):
     if left<=start and end<=right:
         tree[node] += (end-start+1)*diff
         if start!=end:
-            z[node*2] += diff
-            z[node*2+1] += diff
+            z[node*2] += diff+1
+            z[node*2+1] += diff+2
         return
-    update(node*2, start, middle, left, right, diff)
-    update(node*2+1, middle+1, end, left, right, diff)
+    update(node*2, start, middle, left, right, diff*2)
+    update(node*2+1, middle+1, end, left, right, diff*2+1)
     tree[node] = tree[node*2]+tree[node*2+1]
 
 def rangeSum(node, start, end, x):
@@ -34,8 +34,9 @@ def rangeSum(node, start, end, x):
     middle = (start+end)//2
     if x<start or end<x:return 0
     if start==end==x:return tree[node]
-    rs = rangeSum(node*2, start, middle, x)
-    ls = rangeSum(node*2+1, middle+1, end, x)
+    ls = rangeSum(node*2, start, middle, x)
+    rs = rangeSum(node*2+1, middle+1, end, x)
+    print('===',node,ls,rs)
     return rs+ls
 
 
@@ -48,5 +49,5 @@ if __name__=='__main__':
     init(1,1,n)
     for _ in range(int(input())):
         t,*c = list(map(int,input().split()))
-        if t==1:update(1,1,n,c[0],c[1],c[2])
+        if t==1:update(1,1,n,c[0],c[1],1)
         elif t==2:print(rangeSum(1,1,n,c[0]))
