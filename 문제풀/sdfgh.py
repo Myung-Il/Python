@@ -1,5 +1,3 @@
-from math import pi
-r = int(input())
-
-print(f'{pi*r**2:0.6f}')
-print(f'{2*r**2:0.6f}')
+for _ in range(int(input())):
+    v,e = map(int,input().split())
+    print(e-v+2)
