@@ -1,35 +1,42 @@
 from sys import stdin
 input = lambda:stdin.readline().rstrip()
 
+col, row = map(int,input().split())
+l = [list(map(int,input()))for _ in range(col)]
 
-def init(node,start,end):
-    middle = (start+end)//2
-    if start==end:tree[node] = l[start]
-    else:tree[node] = min(init(node*2,start,middle),init(node*2+1,middle+1,end))
-    return tree[node]
+mx = 0
+for i in range(col):
+    for j in range(row):
+        if l[i][j]:
+            cnt = 0
+            while (0<=j-cnt and i+cnt<col)and l[i+cnt][j-cnt]:
+                cnt+=1
 
-def rangeS(node,start,end,left,right):
-    middle = (start+end)//2
-    if left>end or start>right:return 0
-    if left<=start and end<=right:return tree[node]
-    return min(rangeS(node*2,start,middle,left,right),rangeS(node*2+1,middle+1,end,left,right))
-
-def update(node,start,end,idx,dif):
-    middle = (start+end)//2
-    if start>idx or idx>end:return
-    if start==end:tree[node] = dif
-    else:
-        update(node*2,start,middle,idx,dif)
-        update(node*2+1,middle+1,end,idx,dif)
+            for check in range(cnt,0,-1):
+                if not l[i+cnt+1][j-cnt+1]:continue
+                for idx in range(check):
+                    if cnt and(0<=j-cnt+idx+1 and j+cnt-idx-1<row and i+cnt+idx-1<col):
+                        if not l[i+idx][j+idx]:cnt = 0
+                        if not l[i+cnt+idx-1][j-cnt+idx+1]:cnt = 0
+                        if not l[i+cnt+idx-1][j+cnt-idx-1]:cnt = 0
+                    else:cnt = 0;break
+            mx = max(cnt, mx, 1)
 
 
-if __name__=='__main__':
-    n = int(input())
-    l = [0]+list(map(int,input().split()))
-    tree = [0]*n*4
+print(mx)
 
-    init(1,1,n)
-    for _ in range(int(input())):
-        t,a,b = map(int,input().split())
-        if t==2:print(rangeS(1,1,n,a,b)[1])
-        else:update(1,1,n,a,b)
+'''
+5 5
+01100
+01011
+11111
+01111
+11111
+= 3
+
+3 5
+10101
+01010
+10101
+= 2
+'''

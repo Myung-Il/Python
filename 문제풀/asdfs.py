@@ -1,53 +1,17 @@
 from sys import stdin
-input = lambda:stdin.readline().rstrip()
+input = lambda:stdin.readline().strip()
 
-def init(node, start, end):
-    middle = (start+end)//2
-    if start==end:tree[node] = l[start]
-    else:tree[node] = init(node*2, start, middle)+init(node*2+1, middle+1, end)
-    return tree[node]
+a = input()
+b = input()
 
-def lazy(node, start, end):
-    if z[node]:
-        tree[node] += (end-start+1)*z[node]
-        if start!=end:
-            z[node*2] += z[node]
-            z[node*2+1] += z[node]
-        z[node] = 0
-
-def update(node, start, end, left, right, diff):
-    lazy(node, start, end)
-    middle = (start+end)//2
-    if end<left or right<start:return
-    if left<=start and end<=right:
-        tree[node] += (end-start+1)*diff
-        if start!=end:
-            z[node*2] += diff+1
-            z[node*2+1] += diff+2
-        return
-    update(node*2, start, middle, left, right, diff*2)
-    update(node*2+1, middle+1, end, left, right, diff*2+1)
-    tree[node] = tree[node*2]+tree[node*2+1]
-
-def rangeSum(node, start, end, x):
-    lazy(node, start, end)
-    middle = (start+end)//2
-    if x<start or end<x:return 0
-    if start==end==x:return tree[node]
-    ls = rangeSum(node*2, start, middle, x)
-    rs = rangeSum(node*2+1, middle+1, end, x)
-    print('===',node,ls,rs)
-    return rs+ls
-
-
-if __name__=='__main__':
-    n = int(input())
-    l = [0]+list(map(int,input().split()))
-    z = [0]*n*4
-    tree = [0]*n*4
-
-    init(1,1,n)
-    for _ in range(int(input())):
-        t,*c = list(map(int,input().split()))
-        if t==1:update(1,1,n,c[0],c[1],1)
-        elif t==2:print(rangeSum(1,1,n,c[0]))
+l = [[0 for _ in range(len(b)+1)]for _ in range(len(a)+1)]
+for i in range(len(a)+1):l[i][0] = i
+for i in range(len(b)+1):l[0][i] = i
+for i in range(1, len(a)+1):
+    for j in range(1, len(b)+1):
+        l[i][j] = min(
+            l[i-1][j] + 1,
+            l[i][j-1] + 1,
+            l[i-1][j-1] + (0 if a[i-1]==b[j-1]else 1)
+        )
+print(l[-1][-1])

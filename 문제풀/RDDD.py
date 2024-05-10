@@ -1,7 +1,1 @@
-from collections import deque
-from sys import stdin
-input = lambda:stdin.readline().rstrip()
-
-
-if __name__=='__main__':
-    pass
+print(*[[i for i in range(5)]for _ in range(3)])
