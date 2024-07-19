@@ -1,42 +1,42 @@
 from sys import stdin
 input = lambda:stdin.readline().rstrip()
 
-col, row = map(int,input().split())
-l = [list(map(int,input()))for _ in range(col)]
-
-mx = 0
-for i in range(col):
-    for j in range(row):
-        if l[i][j]:
-            cnt = 0
-            while (0<=j-cnt and i+cnt<col)and l[i+cnt][j-cnt]:
-                cnt+=1
-
-            for check in range(cnt,0,-1):
-                if not l[i+cnt+1][j-cnt+1]:continue
-                for idx in range(check):
-                    if cnt and(0<=j-cnt+idx+1 and j+cnt-idx-1<row and i+cnt+idx-1<col):
-                        if not l[i+idx][j+idx]:cnt = 0
-                        if not l[i+cnt+idx-1][j-cnt+idx+1]:cnt = 0
-                        if not l[i+cnt+idx-1][j+cnt-idx-1]:cnt = 0
-                    else:cnt = 0;break
-            mx = max(cnt, mx, 1)
+col, row, n = map(int,input().split())
+l = [input()for _ in range(col)]
+bl = [[("W"if (idx+p)%2 else "B")for idx in range(n)]for p in range(n)]
 
 
-print(mx)
+mn = float("inf")
+t = col-n if col>row else row-n+1
+h = (col-n+1 if col-n else 0)+(row-n+1 if row-n else 0)
+for li in range(h if h else 1):
+    bcnt = 0
+    for yi in range(n):
+        for xi in range(n):
+            if l[yi+li//t][xi+li%t]!=bl[yi][xi]:bcnt+=1
+    mn = min(bcnt,  mn)
+print(min(mn, col*row-mn))
 
 '''
-5 5
-01100
-01011
-11111
-01111
-11111
-= 3
+4 4 3
+BBBB
+BBBB
+BBBW
+BBWB
 
-3 5
-10101
-01010
-10101
-= 2
+4 4 3
+BBBB
+BBBB
+BBBW
+BBWB
+
+8 8 8
+WBWBWBWB
+BWBWBWBW
+WBWBWBWB
+BWBBBWBW
+WBWBWBWB
+BWBWBWBW
+WBWBWBWB
+BWBWBWBW
 '''
