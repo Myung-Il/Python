@@ -1,42 +1,16 @@
-from sys import stdin
-input = lambda:stdin.readline().rstrip()
-
-col, row, n = map(int,input().split())
-l = [input()for _ in range(col)]
-bl = [[("W"if (idx+p)%2 else "B")for idx in range(n)]for p in range(n)]
+from string import ascii_letters as ac
 
 
-mn = float("inf")
-t = col-n if col>row else row-n+1
-h = (col-n+1 if col-n else 0)+(row-n+1 if row-n else 0)
-for li in range(h if h else 1):
-    bcnt = 0
-    for yi in range(n):
-        for xi in range(n):
-            if l[yi+li//t][xi+li%t]!=bl[yi][xi]:bcnt+=1
-    mn = min(bcnt,  mn)
-print(min(mn, col*row-mn))
+s = 'A High Point'
 
-'''
-4 4 3
-BBBB
-BBBB
-BBBW
-BBWB
+passwd = ac
+passwd1, passwd2 = passwd[::2], passwd[1::2]
+new_passwd = passwd1+passwd2
+print(new_passwd)
 
-4 4 3
-BBBB
-BBBB
-BBBW
-BBWB
 
-8 8 8
-WBWBWBWB
-BWBWBWBW
-WBWBWBWB
-BWBBBWBW
-WBWBWBWB
-BWBWBWBW
-WBWBWBWB
-BWBWBWBW
-'''
+result = ''
+for elm in s:
+    if elm==" ":result+=" "
+    else:result += new_passwd[passwd.index(elm)]
+print(result)
