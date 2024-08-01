@@ -9,25 +9,12 @@ def bt(e):
         else:right=mid          # ex) 10 7 6 5 로 정정
     return right                # 정정될 위치를 반환
 
-n = int(input())
-a = list(map(int,input().split()))
+n = 12
+a = [3, 1, 5, 2, 1, 1, 3, 2, 7, 8, 6]
 
-dp, idxn = [-float("inf")], [0]*n # NlogN을 위해서 
-for idx in range(n):      # 처음부터 끝까지 N개를 검사
-    if dp[-1]<a[idx]:     # 지금 조사한게 이전것보다 크다면 
-        point = len(dp)   # 길이를 늘리고
-        dp.append(a[idx]) # 저장
-    else:
-        point = bt(a[idx]) # 작거나 같다면 bt로 이동
-        dp[point] = a[idx] # 정정된 위치에 저장
-    idxn[idx] = point      # 저장하고 있는 숫자가 이전 것에 비해서
-                           # 몇번째로 얼마나 큰지 기록
+dp = [-float("inf")]
+for idx in range(n-1):
+    if dp[-1]<a[idx]:dp.append(a[idx]) # 기존의 값보다 크다면 저장
+    else: dp[bt(a[idx])] = a[idx]      # 그게 아니면 검사
 
-result, mx = [], max(idxn)
-for idx in range(n-1, -1, -1): # 역순으로
-    if idxn[idx]==mx:          # 가장큰 자리번째부터 조사
-        result.append(a[idx])  # 조사 한 것을 저장
-        mx -= 1                # 다음 큰 자리로 변경
-
-print(len(result))
-print(*result[::-1])
+    print(dp)
