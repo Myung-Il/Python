@@ -1,16 +1,4 @@
-exec("input();print(sum(map(int,input().split())));"*int(input()))
+n = 8
+n>>=2
 
-
-f'''
-
-  1  21  3  4  5  35  5  4  3  5  98  21  14  17  32
-
-1
-=22 7
-22 7
-= 12 40
-22 12
-
-
-
-'''
+print(n)

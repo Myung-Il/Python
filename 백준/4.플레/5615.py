@@ -2,8 +2,6 @@ from sys import stdin
 import random
 input = lambda:stdin.readline().rstrip()
 
-n = int(input())
-l = [int(input())for _ in range(n)]
 
 def isprime(n):
     if n < 2 or not n & 1:
@@ -30,5 +28,11 @@ def isprime(n):
             return False
     return True
 
-print("소수"if isprime(1223)else"합성수")
-print("소수"if isprime(1224)else"합성수")
+
+n = int(input())
+l = [int(input())for _ in range(n)]
+
+cnt = 0
+for elm in l:
+    if isprime(elm*2+1):cnt+=1
+print(cnt)

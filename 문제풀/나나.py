@@ -1,44 +1,38 @@
-def mult(p, q, mod):
-    p %= mod
-    q %= mod
-    r, w = 0, p
-    while q:
-        if q%2:r = (r+w)%mod
-        w = (2*w)%mod
-        q >>= 1
-    return r
+from sys import stdin
+import random
+input = lambda:stdin.readline().rstrip()
 
-def pow_mod(a, m, p):
-    ret = 1
-    a %= p
 
-    while m:
-        if m%2:ret = mult(ret, a, p)
-        a = mult(a, a, p)
-        m >>= 1
-    return ret
-
-def millerRabin(n, a):
-    k = n-1
-    while 1:
-        d = pow_mod(a, k, n)
-        if k%2:return (d==1 or d==n-1)
-        if d==n-1:return True
-        k >>= 1
-
-def isPrime(n):
-    if n==1:return False
-
-    for elm in prime:
-        if n==elm:return True
-        if n%elm==0:return False
-        if not millerRabin(n, elm):return False
+def isprime(n):
+    if n < 2 or not n & 1:
+        return False
+    if n == 2:
+        return True
+    def mrtest(b):
+        x = pow(b, t, n)
+        if x == 1:
+            return True
+        for i in range(s):
+            if x == n - 1:
+                return True
+            x = pow(x, 2, n)
+        return False
+    s = 0
+    t = n - 1
+    while not t & 1:
+        s += 1
+        t >>= 1
+    for i in range(10):
+        b = random.randrange(2, n)
+        if not mrtest(b):
+            return False
     return True
-        
 
 
-if __name__=="__main__":
-    prime = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41]
-    
-    print("소수"if isPrime(1223)else"합성수")
-    print("소수"if isPrime(1224)else"합성수")
+n = int(input())
+l = [int(input())for _ in range(n)]
+
+cnt = 0
+for elm in l:
+    if isprime(elm*2+1):cnt+=1
+print(cnt)
