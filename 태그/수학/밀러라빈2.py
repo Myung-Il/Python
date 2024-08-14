@@ -24,5 +24,7 @@ def isprime(n):
             return False
     return True
 
+
+
 print("소수"if isprime(1223)else"합성수")
 print("소수"if isprime(1224)else"합성수")

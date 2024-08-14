@@ -1,4 +1,10 @@
+from sys import stdin
 import random
+input = lambda:stdin.readline().rstrip()
+
+n = int(input())
+l = [int(input())for _ in range(n)]
+
 def isprime(n):
     if n < 2 or not n & 1:
         return False

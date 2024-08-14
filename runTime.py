@@ -1,29 +1,43 @@
 from datetime import timedelta as td
 from time import time, sleep
-start = time()
 
+l = []
+for _ in range(1000):
+    start = time()
+    ##############
+    
+    import random
+    def isprime(n):
+        if n < 2 or not n & 1:
+            return False
+        if n == 2:
+            return True
+        def mrtest(b):
+            x = pow(b, t, n)
+            if x == 1:
+                return True
+            for i in range(s):
+                if x == n - 1:
+                    return True
+                x = pow(x, 2, n)
+            return False
+        s = 0
+        t = n - 1
+        while not t & 1:
+            s += 1
+            t >>= 1
+        for i in range(10):
+            b = random.randrange(2, n)
+            if not mrtest(b):
+                return False
+        return True
 
-from sys import stdin
-input = lambda:stdin.readline().rstrip()
+    print("소수"if isprime(1223)else"합성수")
+    print("소수"if isprime(1224)else"합성수")
+    
+    ############
+    end = time()
+    l.append(td(seconds=end - start))
 
-
-m = [input().split()for _ in range(10)]
-
-r = 0
-c = [0]*10
-for i in range(10):
-    c[i] = len(set(m[i]))
-    if c[i]==1:r+=1;break
-
-c = [[]for _ in range(10)]
-if r==0:
-    for x in range(10):
-        for y in range(10):
-            c[x].append(m[y][x])
-        if len(set(c[x]))==1:r+=1;break
-
-print(r)
-
-
-end = time()
-print(td(seconds=end-start))
+average_time = sum(l, td()) / 1000
+print(average_time)
