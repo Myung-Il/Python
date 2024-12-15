@@ -1,28 +1,38 @@
-import random
-def isprime(n):
-    if n < 2 or not n & 1:
-        return False
-    if n == 2:
-        return True
-    def mrtest(b):
-        x = pow(b, t, n)
-        if x == 1:
-            return True
-        for i in range(s):
-            if x == n - 1:
-                return True
-            x = pow(x, 2, n)
-        return False
-    s = 0
-    t = n - 1
-    while not t & 1:
-        s += 1
-        t >>= 1
-    for i in range(10):
-        b = random.randrange(2, n)
-        if not mrtest(b):
-            return False
-    return True
+from 나나 import words
+import random as r
+import time as t
+from string import ascii_letters
+from re import sub
+at = ascii_letters + " []'-"
 
-print("소수"if isprime(1223)else"합성수")
-print("소수"if isprime(1224)else"합성수")
+l = []
+for line in words.split('\n'):
+    if not line:continue
+    part, pin = ['', ''], 0
+    for elm in line:
+        if elm not in at:pin = 1
+        match pin:
+            case 0:part[0]+=elm
+            case 1:part[1]+=elm
+    part[0] = part[0].strip()
+    part[1] = part[1].strip()
+    l.append(part)
+
+r.shuffle(l)
+
+total, c = 0, 0
+for elm in l:
+    total += 1
+    ty = r.choice(['E', 'K'])
+    if ty=="E":
+        s = input(f"{elm[0]} : ")
+        if sub(r"\s+", "", s)==sub(r"\s+", "", elm[1]):print('O');c+=1
+        else:print(f"X : {elm[1]}")
+        
+    if ty=="K":
+        s = input(f"{elm[1]} : ")
+        if sub(r"\s+", "", s)==sub(r"\s+", "", elm[0]):print('O');c+=1
+        else:print(f"X : {elm[0]}")
+
+    print(f"\n정답률 : {c}/{total} : {c/total*100:.2f}%\n")
+    t.sleep(1)
