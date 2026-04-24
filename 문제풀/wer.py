@@ -1,72 +1,30 @@
-class Node:
-    def __init__(self, key, data=None):
-        self.key = key
-        self.data = data
-        self.children = {}
+import requests
+from collections import Counter
 
-class Trie:
-    def __init__(self):
-        self.head = Node(None)
+# 1. 대상 닉네임 설정
+# username = "myung-il" # 예시: 리눅스 창시자 리누스 토발즈
+username = "geonhwi82"
+url = f"https://api.github.com/users/{username}/repos"
 
-    def insert(self, string):
-        current_node = self.head
+# 2. 레포지토리 목록 가져오기 (직행)
+response = requests.get(url)
 
-        for char in string:
-            if char not in current_node.children:
-                current_node.children[char] = Node(char)
-            current_node = current_node.children[char]
-        current_node.data = string
-
-    def search(self, string):
-        current_node = self.head
-
-        for char in string:
-            if char in current_node.children:
-                current_node = current_node.children[char]
-            else:
-                return False
-
-        if current_node.data:
-            return True
-        else:
-            return False
-
-    def starts_with(self, prefix):
-        current_node = self.head
-        words = []
-
-        for p in prefix:
-            if p in current_node.children:
-                current_node = current_node.children[p]
-            else:
-                return None
-
-        current_node = [current_node]
-        next_node = []
-        while True:
-            for node in current_node:
-                if node.data:
-                    words.append(node.data)
-                next_node.extend(list(node.children.values()))
-            if len(next_node) != 0:
-                current_node = next_node
-                next_node = []
-            else:
-                break
-
-        return words
+if response.status_code == 200:
+    repos = response.json()
     
-trie = Trie()
-word_list = ["frodo", "front", "firefox", "fire", "foxfirefox"]
-for word in word_list:
-    trie.insert(word)
-
-print(trie.search("friend"))
-print(trie.search("frodo"))
-print(trie.search("fire"))
-print('===')
-print(trie.starts_with("fire"))
-print(trie.starts_with("fro"))
-print(trie.starts_with("jimmy"))
-print(trie.starts_with("f"))
-print(trie.starts_with("fo"))
+    # 3. language 데이터만 수집하기
+    used_languages = []
+    for repo in repos:
+        lang = repo.get('language')
+        if lang is not None: # 언어가 지정되지 않은 빈 레포지토리 제외
+            used_languages.append(lang)
+            
+    # 4. 통계 내기 (어떤 언어를 몇 번 주력으로 썼는지)
+    language_stats = Counter(used_languages)
+    
+    print(f"[{username}님의 주력 언어 통계]")
+    for lang, count in language_stats.most_common():
+        print(f"- {lang}: {count}개 프로젝트")
+        
+else:
+    print("데이터를 가져오는데 실패했습니다.")
